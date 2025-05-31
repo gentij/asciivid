@@ -35,6 +35,17 @@ pub fn render_frame_to_ascii_colored(frame_path: &Path, color_enabled: bool) -> 
         ascii_output.push('\n');
     }
 
+    // After rendering, normalize line lengths
+    let lines: Vec<_> = ascii_output.lines().collect();
+    let max_len = lines.iter().map(|l| l.len()).max().unwrap_or(0);
+    let padded = lines
+    .into_iter()
+    .map(|line| format!("{:<width$}", line, width = max_len))
+    .collect::<Vec<_>>()
+    .join("\n");
+
+    padded;
+
     if color_enabled {
         ascii_output.push_str("\x1b[0m"); // Reset color
     }
